@@ -23,7 +23,7 @@ jobs:
       - name: Run Claude Code Review
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
             你是這個 Flutter (Dart) 專案 Fridge Pal 的程式碼 reviewer。請針對這個 PR 的 diff 給意見，重點：
 
