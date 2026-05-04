@@ -25,7 +25,9 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
-            你是這個 Flutter (Dart) 專案 Fridge Pal 的程式碼 reviewer。請針對這個 PR 的 diff 給意見，重點：
+            你是這個 Flutter (Dart) 專案 Fridge Pal 的程式碼 reviewer。請針對這個 PR 的 diff 給意見。
+
+            **檢查重點**：
 
             1. **Dart / Flutter 慣例**：null safety、`const` 用法、widget 拆分、避免在 build 內做 heavy work。
             2. **State management**：Riverpod provider 是否正確 dispose、避免在 build 內 read。
@@ -35,5 +37,10 @@ jobs:
             6. **測試**：新功能是否有單元測試或 widget 測試。
             7. **平台差異**：iOS / Android 權限或設定（相機、通知）是否兩邊都補。
 
-            如果 diff 沒問題就明確說「LGTM」，避免硬擠雞蛋裡挑骨頭的意見。
+            **輸出規則（重要）**：
+
+            - **無論結論為何，都必須在 PR 上留下一段總結 comment**，讓使用者明確看到 review 已執行。
+            - 若 diff 沒問題：用單行回覆 `✅ LGTM — <一句話說明為何 OK>`。
+            - 若有意見：先列「Must fix」（會破壞功能 / 安全），再列「Nice to have」（風格 / 可選優化），每點配檔案路徑與行號。**不要硬擠雞蛋裡挑骨頭的意見**——沒重大問題寧可只給 LGTM。
+            - 不要 approve / request changes（不送 review state，只留 comment），讓人類保留最終 merge 決定權。
           claude_args: "--model claude-sonnet-4-6"
