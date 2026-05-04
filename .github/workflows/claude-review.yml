@@ -1,0 +1,38 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  review:
+    name: Claude reviews the diff
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            你是這個 Flutter (Dart) 專案 Fridge Pal 的程式碼 reviewer。請針對這個 PR 的 diff 給意見，重點：
+
+            1. **Dart / Flutter 慣例**：null safety、`const` 用法、widget 拆分、避免在 build 內做 heavy work。
+            2. **State management**：Riverpod provider 是否正確 dispose、避免在 build 內 read。
+            3. **Drift schema migration**：若改 table 是否補 migration、欄位變更是否破壞既有資料。
+            4. **API key / 機密**：絕不能在程式或 commit 中出現 `sk-ant-` 開頭字串、Telegram token、其他 secret。
+            5. **commit 顆粒度**：是否每個 commit 為一個小邏輯單元、訊息符合 Conventional Commits（`feat:` `fix:` `chore:` ...）。
+            6. **測試**：新功能是否有單元測試或 widget 測試。
+            7. **平台差異**：iOS / Android 權限或設定（相機、通知）是否兩邊都補。
+
+            如果 diff 沒問題就明確說「LGTM」，避免硬擠雞蛋裡挑骨頭的意見。
+          claude_args: "--model claude-sonnet-4-6"
