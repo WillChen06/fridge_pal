@@ -8,6 +8,7 @@
 - 🔔 食材快用完 / 接近到期跳本地通知
 - 📷 拍標籤 OCR 自動建檔（Google ML Kit，裝置端）
 - 🤖 串接 Claude API，根據冰箱現有食材推薦食譜
+- ✅ CI smoke verified (2026-05-04)
 
 詳細 roadmap 見 `docs/plan.md`（或 Claude 計畫檔）。
 
