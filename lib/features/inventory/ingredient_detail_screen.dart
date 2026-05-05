@@ -121,10 +121,18 @@ class _IngredientDetail extends ConsumerWidget {
       return;
     }
 
-    await ref.read(ingredientRepositoryProvider).delete(ingredient.id);
+    try {
+      await ref.read(ingredientRepositoryProvider).delete(ingredient.id);
 
-    if (context.mounted) {
-      context.pop();
+      if (context.mounted) {
+        context.pop();
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('食材刪除失敗：$error')));
+      }
     }
   }
 }

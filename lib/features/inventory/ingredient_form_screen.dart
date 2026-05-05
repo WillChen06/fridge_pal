@@ -262,16 +262,28 @@ class _IngredientFormScaffoldState
       location: _locationController.text,
     );
 
-    final repository = ref.read(ingredientRepositoryProvider);
-    final ingredient = widget.ingredient;
-    if (ingredient == null) {
-      await repository.create(input);
-    } else {
-      await repository.updateExisting(ingredient, input);
-    }
+    try {
+      final repository = ref.read(ingredientRepositoryProvider);
+      final ingredient = widget.ingredient;
+      if (ingredient == null) {
+        await repository.create(input);
+      } else {
+        await repository.updateExisting(ingredient, input);
+      }
 
-    if (mounted) {
-      context.pop();
+      if (mounted) {
+        context.pop();
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('食材儲存失敗：$error')));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
     }
   }
 
