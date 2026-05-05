@@ -138,9 +138,7 @@ class _IngredientFormScaffoldState
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-                    ],
+                    inputFormatters: const [_DecimalTextInputFormatter()],
                     textInputAction: TextInputAction.next,
                     validator: _positiveNumberValidator,
                   ),
@@ -176,9 +174,7 @@ class _IngredientFormScaffoldState
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
-              ],
+              inputFormatters: const [_DecimalTextInputFormatter()],
               textInputAction: TextInputAction.done,
               validator: _optionalPositiveNumberValidator,
             ),
@@ -335,5 +331,22 @@ class _IngredientFormAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(title: Text(title));
+  }
+}
+
+class _DecimalTextInputFormatter extends TextInputFormatter {
+  const _DecimalTextInputFormatter();
+
+  static final RegExp _validPattern = RegExp(r'^\d*\.?\d*$');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (_validPattern.hasMatch(newValue.text)) {
+      return newValue;
+    }
+    return oldValue;
   }
 }
