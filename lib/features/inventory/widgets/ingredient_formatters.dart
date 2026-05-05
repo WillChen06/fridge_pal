@@ -1,3 +1,7 @@
+import 'package:intl/intl.dart';
+
+final DateFormat _ingredientDateFormat = DateFormat('yyyy-MM-dd');
+
 String formatIngredientAmount(double quantity, String unit) {
   final rounded = quantity.roundToDouble();
   final value = quantity == rounded
@@ -7,8 +11,5 @@ String formatIngredientAmount(double quantity, String unit) {
 }
 
 String formatIngredientDate(DateTime date) {
-  final year = date.year.toString().padLeft(4, '0');
-  final month = date.month.toString().padLeft(2, '0');
-  final day = date.day.toString().padLeft(2, '0');
-  return '$year-$month-$day';
+  return _ingredientDateFormat.format(date);
 }
