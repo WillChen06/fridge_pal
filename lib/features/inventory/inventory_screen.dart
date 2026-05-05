@@ -51,7 +51,9 @@ class InventoryScreen extends ConsumerWidget {
     );
   }
 
-  Map<String, List<Ingredient>> _groupByCategory(List<Ingredient> ingredients) {
+  static Map<String, List<Ingredient>> _groupByCategory(
+    List<Ingredient> ingredients,
+  ) {
     final grouped = <String, List<Ingredient>>{};
     for (final ingredient in ingredients) {
       grouped
