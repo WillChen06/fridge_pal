@@ -20,7 +20,7 @@ class _ShoppingRecordFormScreenState
     extends ConsumerState<ShoppingRecordFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _noteController = TextEditingController();
-  final _itemScrollController = ScrollController();
+  final _itemPageController = PageController();
   final _items = <_ShoppingItemDraft>[];
   DateTime _date = DateTime.now();
   bool _isSaving = false;
@@ -34,7 +34,7 @@ class _ShoppingRecordFormScreenState
   @override
   void dispose() {
     _noteController.dispose();
-    _itemScrollController.dispose();
+    _itemPageController.dispose();
     for (final item in _items) {
       item.dispose();
     }
@@ -91,15 +91,20 @@ class _ShoppingRecordFormScreenState
                 final cardWidth = constraints.maxWidth
                     .clamp(280.0, 340.0)
                     .toDouble();
+                final pagerHeight =
+                    _items.any((item) => item.matchedIngredientName != null)
+                    ? 344.0
+                    : 304.0;
 
-                return SingleChildScrollView(
-                  controller: _itemScrollController,
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var i = 0; i < _items.length; i++) ...[
-                        SizedBox(
+                return SizedBox(
+                  height: pagerHeight,
+                  child: PageView.builder(
+                    controller: _itemPageController,
+                    itemCount: _items.length,
+                    itemBuilder: (context, i) {
+                      return Align(
+                        alignment: Alignment.topLeft,
+                        child: SizedBox(
                           width: cardWidth,
                           child: _ShoppingItemFields(
                             key: ValueKey(_items[i]),
@@ -112,9 +117,8 @@ class _ShoppingRecordFormScreenState
                             onRemove: () => _removeItem(i),
                           ),
                         ),
-                        if (i != _items.length - 1) const SizedBox(width: 12),
-                      ],
-                    ],
+                      );
+                    },
                   ),
                 );
               },
@@ -159,11 +163,11 @@ class _ShoppingRecordFormScreenState
   void _addItemAndScroll() {
     setState(_addItem);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_itemScrollController.hasClients) {
+      if (!_itemPageController.hasClients) {
         return;
       }
-      _itemScrollController.animateTo(
-        _itemScrollController.position.maxScrollExtent,
+      _itemPageController.animateToPage(
+        _items.length - 1,
         duration: const Duration(milliseconds: 260),
         curve: Curves.easeOutCubic,
       );

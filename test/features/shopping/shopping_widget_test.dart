@@ -107,7 +107,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1));
   });
 
-  testWidgets('add item button scrolls to the newest shopping item card', (
+  testWidgets('add item button pages to the newest shopping item card', (
     tester,
   ) async {
     final database = AppDatabase(NativeDatabase.memory());
@@ -135,6 +135,7 @@ void main() {
     final screenWidth =
         tester.view.physicalSize.width / tester.view.devicePixelRatio;
 
+    expect(newestFieldRect.left, lessThan(80));
     expect(newestFieldRect.left, lessThan(screenWidth));
     expect(newestFieldRect.right, greaterThan(0));
 
