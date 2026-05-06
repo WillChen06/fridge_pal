@@ -20,6 +20,7 @@ class _ShoppingRecordFormScreenState
     extends ConsumerState<ShoppingRecordFormScreen> {
   final _formKey = GlobalKey<FormState>();
   final _noteController = TextEditingController();
+  final _itemScrollController = ScrollController();
   final _items = <_ShoppingItemDraft>[];
   DateTime _date = DateTime.now();
   bool _isSaving = false;
@@ -33,6 +34,7 @@ class _ShoppingRecordFormScreenState
   @override
   void dispose() {
     _noteController.dispose();
+    _itemScrollController.dispose();
     for (final item in _items) {
       item.dispose();
     }
@@ -77,7 +79,7 @@ class _ShoppingRecordFormScreenState
                 Text('品項', style: Theme.of(context).textTheme.titleMedium),
                 const Spacer(),
                 TextButton.icon(
-                  onPressed: () => setState(_addItem),
+                  onPressed: _addItemAndScroll,
                   icon: const Icon(Icons.add),
                   label: const Text('加品項'),
                 ),
@@ -90,31 +92,29 @@ class _ShoppingRecordFormScreenState
                     .clamp(280.0, 340.0)
                     .toDouble();
 
-                return SizedBox(
-                  height: 360,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (var i = 0; i < _items.length; i++) ...[
-                          SizedBox(
-                            width: cardWidth,
-                            child: _ShoppingItemFields(
-                              key: ValueKey(_items[i]),
-                              index: i,
-                              item: _items[i],
-                              canRemove: _items.length > 1,
-                              inventory: inventory,
-                              onChanged: () =>
-                                  _applyIngredientMatch(i, inventory),
-                              onRemove: () => _removeItem(i),
-                            ),
+                return SingleChildScrollView(
+                  controller: _itemScrollController,
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (var i = 0; i < _items.length; i++) ...[
+                        SizedBox(
+                          width: cardWidth,
+                          child: _ShoppingItemFields(
+                            key: ValueKey(_items[i]),
+                            index: i,
+                            item: _items[i],
+                            canRemove: _items.length > 1,
+                            inventory: inventory,
+                            onChanged: () =>
+                                _applyIngredientMatch(i, inventory),
+                            onRemove: () => _removeItem(i),
                           ),
-                          if (i != _items.length - 1) const SizedBox(width: 12),
-                        ],
+                        ),
+                        if (i != _items.length - 1) const SizedBox(width: 12),
                       ],
-                    ),
+                    ],
                   ),
                 );
               },
@@ -156,10 +156,24 @@ class _ShoppingRecordFormScreenState
     _items.add(_ShoppingItemDraft());
   }
 
+  void _addItemAndScroll() {
+    setState(_addItem);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_itemScrollController.hasClients) {
+        return;
+      }
+      _itemScrollController.animateTo(
+        _itemScrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 260),
+        curve: Curves.easeOutCubic,
+      );
+    });
+  }
+
   void _removeItem(int index) {
-    final item = _items.removeAt(index);
-    item.dispose();
-    setState(() {});
+    setState(() {
+      _items.removeAt(index).dispose();
+    });
   }
 
   void _applyIngredientMatch(int index, List<Ingredient> inventory) {
@@ -268,12 +282,17 @@ class _ShoppingItemFields extends StatelessWidget {
               children: [
                 Text('品項 ${index + 1}'),
                 const Spacer(),
-                if (canRemove)
-                  IconButton(
+                Visibility(
+                  visible: canRemove,
+                  maintainAnimation: true,
+                  maintainSize: true,
+                  maintainState: true,
+                  child: IconButton(
                     tooltip: '移除品項',
                     onPressed: onRemove,
                     icon: const Icon(Icons.remove_circle_outline),
                   ),
+                ),
               ],
             ),
             TextFormField(

@@ -106,4 +106,40 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 1));
   });
+
+  testWidgets('add item button scrolls to the newest shopping item card', (
+    tester,
+  ) async {
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [appDatabaseProvider.overrideWithValue(database)],
+        child: const FridgePalApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('買菜'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('新增紀錄'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('加品項'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('加品項'));
+    await tester.pumpAndSettle();
+
+    final newestNameField = find.byKey(const ValueKey('shopping-item-name-2'));
+    final newestFieldRect = tester.getRect(newestNameField);
+    final screenWidth =
+        tester.view.physicalSize.width / tester.view.devicePixelRatio;
+
+    expect(newestFieldRect.left, lessThan(screenWidth));
+    expect(newestFieldRect.right, greaterThan(0));
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 1));
+  });
 }
