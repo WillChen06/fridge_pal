@@ -84,16 +84,41 @@ class _ShoppingRecordFormScreenState
               ],
             ),
             const SizedBox(height: 8),
-            for (var i = 0; i < _items.length; i++)
-              _ShoppingItemFields(
-                key: ValueKey(_items[i]),
-                index: i,
-                item: _items[i],
-                canRemove: _items.length > 1,
-                inventory: inventory,
-                onChanged: () => _applyIngredientMatch(i, inventory),
-                onRemove: () => _removeItem(i),
-              ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final cardWidth = constraints.maxWidth
+                    .clamp(280.0, 340.0)
+                    .toDouble();
+
+                return SizedBox(
+                  height: 360,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var i = 0; i < _items.length; i++) ...[
+                          SizedBox(
+                            width: cardWidth,
+                            child: _ShoppingItemFields(
+                              key: ValueKey(_items[i]),
+                              index: i,
+                              item: _items[i],
+                              canRemove: _items.length > 1,
+                              inventory: inventory,
+                              onChanged: () =>
+                                  _applyIngredientMatch(i, inventory),
+                              onRemove: () => _removeItem(i),
+                            ),
+                          ),
+                          if (i != _items.length - 1) const SizedBox(width: 12),
+                        ],
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
