@@ -31,8 +31,11 @@ class ShoppingItems extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get recordId =>
       integer().references(ShoppingRecords, #id, onDelete: KeyAction.cascade)();
-  IntColumn get ingredientId =>
-      integer().nullable().references(Ingredients, #id)();
+  IntColumn get ingredientId => integer().nullable().references(
+    Ingredients,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
   TextColumn get nameSnapshot => text().withLength(min: 1, max: 80)();
   RealColumn get quantity => real()();
   TextColumn get unit => text().withLength(min: 1, max: 24)();

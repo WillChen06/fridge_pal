@@ -101,6 +101,44 @@ void main() {
     expect(deletedItems, isEmpty);
   });
 
+  test(
+    'deleting linked ingredient keeps shopping item with null link',
+    () async {
+      final now = DateTime(2026, 5, 6);
+      final ingredientId = await database.ingredientDao.insertIngredient(
+        IngredientsCompanion.insert(
+          name: '牛奶',
+          category: const Value('乳製品'),
+          quantity: 1,
+          unit: '瓶',
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      final recordId = await database.shoppingRecordDao.insertRecord(
+        ShoppingRecordsCompanion.insert(date: now),
+      );
+      await database.shoppingItemDao.insertItem(
+        ShoppingItemsCompanion.insert(
+          recordId: recordId,
+          ingredientId: Value(ingredientId),
+          nameSnapshot: '牛奶',
+          quantity: 1,
+          unit: '瓶',
+        ),
+      );
+
+      final deleted = await database.ingredientDao.deleteIngredient(
+        ingredientId,
+      );
+      final items = await database.shoppingItemDao.getByRecordId(recordId);
+
+      expect(deleted, 1);
+      expect(items.single.nameSnapshot, '牛奶');
+      expect(items.single.ingredientId, isNull);
+    },
+  );
+
   test('v1 ingredients survive v2 migration', () async {
     await database.close();
     database = AppDatabase(

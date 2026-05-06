@@ -962,7 +962,7 @@ class $ShoppingItemsTable extends ShoppingItems
     type: DriftSqlType.int,
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES ingredients (id)',
+      'REFERENCES ingredients (id) ON DELETE SET NULL',
     ),
   );
   static const VerificationMeta _nameSnapshotMeta = const VerificationMeta(
@@ -1424,6 +1424,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('shopping_items', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'ingredients',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('shopping_items', kind: UpdateKind.update)],
     ),
   ]);
 }
