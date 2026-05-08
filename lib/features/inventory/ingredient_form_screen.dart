@@ -4,19 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/db/database.dart';
+import '../../core/ocr/label_parser.dart';
 import 'inventory_providers.dart';
 import 'widgets/ingredient_formatters.dart';
 
 class IngredientFormScreen extends ConsumerWidget {
-  const IngredientFormScreen({this.ingredientId, super.key});
+  const IngredientFormScreen({this.ingredientId, this.prefill, super.key});
 
   final int? ingredientId;
+  final ParsedLabel? prefill;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ingredientId;
     if (id == null) {
-      return const _IngredientFormScaffold();
+      return _IngredientFormScaffold(prefill: prefill);
     }
 
     final ingredient = ref.watch(ingredientByIdProvider(id));
@@ -43,9 +45,10 @@ class IngredientFormScreen extends ConsumerWidget {
 }
 
 class _IngredientFormScaffold extends ConsumerStatefulWidget {
-  const _IngredientFormScaffold({this.ingredient});
+  const _IngredientFormScaffold({this.ingredient, this.prefill});
 
   final Ingredient? ingredient;
+  final ParsedLabel? prefill;
 
   @override
   ConsumerState<_IngredientFormScaffold> createState() =>
@@ -70,19 +73,26 @@ class _IngredientFormScaffoldState
   void initState() {
     super.initState();
     final ingredient = widget.ingredient;
-    _nameController = TextEditingController(text: ingredient?.name);
+    final prefill = widget.prefill;
+    _nameController = TextEditingController(
+      text: ingredient?.name ?? prefill?.productName,
+    );
     _categoryController = TextEditingController(
       text: ingredient?.category ?? '未分類',
     );
     _quantityController = TextEditingController(
-      text: ingredient == null ? '' : ingredient.quantity.toString(),
+      text: ingredient == null
+          ? _formatOptionalDouble(prefill?.quantity)
+          : ingredient.quantity.toString(),
     );
-    _unitController = TextEditingController(text: ingredient?.unit ?? '個');
+    _unitController = TextEditingController(
+      text: ingredient?.unit ?? prefill?.unit ?? '個',
+    );
     _locationController = TextEditingController(text: ingredient?.location);
     _lowStockThresholdController = TextEditingController(
       text: ingredient?.lowStockThreshold?.toString() ?? '',
     );
-    _expiryDate = ingredient?.expiryDate;
+    _expiryDate = ingredient?.expiryDate ?? prefill?.expiryDate;
   }
 
   @override
@@ -316,6 +326,16 @@ class _IngredientFormScaffoldState
       return null;
     }
     return double.parse(trimmed);
+  }
+
+  String _formatOptionalDouble(double? value) {
+    if (value == null) {
+      return '';
+    }
+    if (value == value.truncateToDouble()) {
+      return value.toInt().toString();
+    }
+    return value.toString();
   }
 }
 

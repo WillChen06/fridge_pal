@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../ocr/label_parser.dart';
 import '../../features/inventory/inventory_screen.dart';
 import '../../features/inventory/ingredient_detail_screen.dart';
 import '../../features/inventory/ingredient_form_screen.dart';
@@ -27,7 +28,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'new',
-                    builder: (context, state) => const IngredientFormScreen(),
+                    builder: (context, state) {
+                      final extra = state.extra;
+                      return IngredientFormScreen(
+                        prefill: extra is ParsedLabel ? extra : null,
+                      );
+                    },
                   ),
                   GoRoute(
                     path: ':id',
