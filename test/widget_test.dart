@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:fridge_pal/app.dart';
 import 'package:fridge_pal/core/db/database.dart';
 import 'package:fridge_pal/features/inventory/inventory_providers.dart';
+import 'package:fridge_pal/features/shopping/shopping_providers.dart';
 
 void main() {
   testWidgets('app boots with bottom navigation tabs', (tester) async {
@@ -12,6 +13,11 @@ void main() {
         overrides: [
           ingredientListProvider.overrideWith(
             (ref) => Stream<List<Ingredient>>.value(const <Ingredient>[]),
+          ),
+          shoppingRecordListProvider.overrideWith(
+            (ref) => Stream<List<ShoppingRecordWithItems>>.value(
+              const <ShoppingRecordWithItems>[],
+            ),
           ),
         ],
         child: const FridgePalApp(),

@@ -24,6 +24,15 @@ class IngredientDao extends DatabaseAccessor<AppDatabase>
     return query.getSingleOrNull();
   }
 
+  Future<List<Ingredient>> getAll() {
+    final query = select(ingredients)
+      ..orderBy([
+        (table) => OrderingTerm.asc(table.category),
+        (table) => OrderingTerm.asc(table.name),
+      ]);
+    return query.get();
+  }
+
   Future<int> insertIngredient(IngredientsCompanion companion) {
     return into(ingredients).insert(companion);
   }

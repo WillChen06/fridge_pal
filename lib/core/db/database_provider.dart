@@ -11,3 +11,11 @@ final appDatabaseProvider = Provider<AppDatabase>((ref) {
 final ingredientDaoProvider = Provider<IngredientDao>((ref) {
   return ref.watch(appDatabaseProvider).ingredientDao;
 });
+
+final shoppingRecordDaoProvider = Provider<ShoppingRecordDao>((ref) {
+  return ref.watch(appDatabaseProvider).shoppingRecordDao;
+});
+
+final shoppingItemDaoProvider = Provider<ShoppingItemDao>((ref) {
+  return ref.watch(appDatabaseProvider).shoppingItemDao;
+});

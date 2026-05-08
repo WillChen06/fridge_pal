@@ -6,6 +6,8 @@ import '../../features/inventory/ingredient_detail_screen.dart';
 import '../../features/inventory/ingredient_form_screen.dart';
 import '../../features/recipes/recipes_screen.dart';
 import '../../features/scan/scan_screen.dart';
+import '../../features/shopping/shopping_record_detail_screen.dart';
+import '../../features/shopping/shopping_record_form_screen.dart';
 import '../../features/shopping/shopping_screen.dart';
 import '../../shared/widgets/main_scaffold.dart';
 
@@ -50,6 +52,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/shopping',
                 builder: (context, state) => const ShoppingScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'new',
+                    builder: (context, state) =>
+                        const ShoppingRecordFormScreen(),
+                  ),
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) => ShoppingRecordDetailScreen(
+                      recordId: int.parse(state.pathParameters['id']!),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
