@@ -43,6 +43,17 @@ flutter run --dart-define-from-file=env.json
 
 > ⚠️ `env.json` 在 `.gitignore` 內，**絕對不要 commit**。
 
+## AI 食譜功能
+
+需要在 `env.json` 設定 `ANTHROPIC_API_KEY`，且帳號要有可用 quota（吃 Claude Pro/Max 訂閱或 API credits）。
+
+每次推薦會：
+- 帶最多 50 個食材（依到期日排序）
+- max_tokens 上限 2048
+- 啟用 prompt caching（5 分鐘內重複 query 省 ~70% tokens）
+
+可在「食譜」分頁查看最近 10 筆歷史，包含 token 使用統計。
+
 ## 通知測試
 
 iOS Simulator：
