@@ -14,7 +14,16 @@ class InventoryScreen extends ConsumerWidget {
     final ingredients = ref.watch(ingredientListProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('庫存')),
+      appBar: AppBar(
+        title: const Text('庫存'),
+        actions: [
+          IconButton(
+            tooltip: '通知設定',
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => context.push('/settings'),
+          ),
+        ],
+      ),
       body: ingredients.when(
         data: (items) {
           if (items.isEmpty) {
