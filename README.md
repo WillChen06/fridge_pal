@@ -23,6 +23,7 @@
 首次使用「掃描」功能時，App 會請求：
 - 📷 相機（拍標籤辨識）
 - 🖼️ 相簿（選圖辨識）
+- 🔔 通知（食材到期 / 低庫存提醒）
 
 iOS / Android 模擬器測試 OCR 建議用相簿選圖，不要用模擬相機。
 
@@ -41,6 +42,15 @@ flutter run --dart-define-from-file=env.json
 ```
 
 > ⚠️ `env.json` 在 `.gitignore` 內，**絕對不要 commit**。
+
+## 通知測試
+
+iOS Simulator：
+1. 設定 → 通知 → 確認 Fridge Pal 已開啟通知
+2. App 內 → 庫存頁右上角齒輪 → 點「測試通知」
+3. 通知應在 5 秒內出現
+
+Android Emulator 同步驟。實機測試前確認系統時區正確。
 
 ## 開發流程
 
