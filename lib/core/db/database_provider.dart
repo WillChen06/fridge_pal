@@ -19,3 +19,7 @@ final shoppingRecordDaoProvider = Provider<ShoppingRecordDao>((ref) {
 final shoppingItemDaoProvider = Provider<ShoppingItemDao>((ref) {
   return ref.watch(appDatabaseProvider).shoppingItemDao;
 });
+
+final recipeDaoProvider = Provider<RecipeDao>((ref) {
+  return ref.watch(appDatabaseProvider).recipeDao;
+});

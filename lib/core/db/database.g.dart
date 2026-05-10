@@ -1392,6 +1392,531 @@ class ShoppingItemsCompanion extends UpdateCompanion<ShoppingItem> {
   }
 }
 
+class $RecipesTable extends Recipes with TableInfo<$RecipesTable, Recipe> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RecipesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _inventorySnapshotMeta = const VerificationMeta(
+    'inventorySnapshot',
+  );
+  @override
+  late final GeneratedColumn<String> inventorySnapshot =
+      GeneratedColumn<String>(
+        'inventory_snapshot',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _responseMeta = const VerificationMeta(
+    'response',
+  );
+  @override
+  late final GeneratedColumn<String> response = GeneratedColumn<String>(
+    'response',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _inputTokensMeta = const VerificationMeta(
+    'inputTokens',
+  );
+  @override
+  late final GeneratedColumn<int> inputTokens = GeneratedColumn<int>(
+    'input_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _outputTokensMeta = const VerificationMeta(
+    'outputTokens',
+  );
+  @override
+  late final GeneratedColumn<int> outputTokens = GeneratedColumn<int>(
+    'output_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cacheReadTokensMeta = const VerificationMeta(
+    'cacheReadTokens',
+  );
+  @override
+  late final GeneratedColumn<int> cacheReadTokens = GeneratedColumn<int>(
+    'cache_read_tokens',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    title,
+    inventorySnapshot,
+    response,
+    inputTokens,
+    outputTokens,
+    cacheReadTokens,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'recipes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Recipe> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('inventory_snapshot')) {
+      context.handle(
+        _inventorySnapshotMeta,
+        inventorySnapshot.isAcceptableOrUnknown(
+          data['inventory_snapshot']!,
+          _inventorySnapshotMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_inventorySnapshotMeta);
+    }
+    if (data.containsKey('response')) {
+      context.handle(
+        _responseMeta,
+        response.isAcceptableOrUnknown(data['response']!, _responseMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_responseMeta);
+    }
+    if (data.containsKey('input_tokens')) {
+      context.handle(
+        _inputTokensMeta,
+        inputTokens.isAcceptableOrUnknown(
+          data['input_tokens']!,
+          _inputTokensMeta,
+        ),
+      );
+    }
+    if (data.containsKey('output_tokens')) {
+      context.handle(
+        _outputTokensMeta,
+        outputTokens.isAcceptableOrUnknown(
+          data['output_tokens']!,
+          _outputTokensMeta,
+        ),
+      );
+    }
+    if (data.containsKey('cache_read_tokens')) {
+      context.handle(
+        _cacheReadTokensMeta,
+        cacheReadTokens.isAcceptableOrUnknown(
+          data['cache_read_tokens']!,
+          _cacheReadTokensMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Recipe map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Recipe(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      inventorySnapshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}inventory_snapshot'],
+      )!,
+      response: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}response'],
+      )!,
+      inputTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}input_tokens'],
+      ),
+      outputTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}output_tokens'],
+      ),
+      cacheReadTokens: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cache_read_tokens'],
+      ),
+    );
+  }
+
+  @override
+  $RecipesTable createAlias(String alias) {
+    return $RecipesTable(attachedDatabase, alias);
+  }
+}
+
+class Recipe extends DataClass implements Insertable<Recipe> {
+  final int id;
+  final DateTime createdAt;
+  final String title;
+  final String inventorySnapshot;
+  final String response;
+  final int? inputTokens;
+  final int? outputTokens;
+  final int? cacheReadTokens;
+  const Recipe({
+    required this.id,
+    required this.createdAt,
+    required this.title,
+    required this.inventorySnapshot,
+    required this.response,
+    this.inputTokens,
+    this.outputTokens,
+    this.cacheReadTokens,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['title'] = Variable<String>(title);
+    map['inventory_snapshot'] = Variable<String>(inventorySnapshot);
+    map['response'] = Variable<String>(response);
+    if (!nullToAbsent || inputTokens != null) {
+      map['input_tokens'] = Variable<int>(inputTokens);
+    }
+    if (!nullToAbsent || outputTokens != null) {
+      map['output_tokens'] = Variable<int>(outputTokens);
+    }
+    if (!nullToAbsent || cacheReadTokens != null) {
+      map['cache_read_tokens'] = Variable<int>(cacheReadTokens);
+    }
+    return map;
+  }
+
+  RecipesCompanion toCompanion(bool nullToAbsent) {
+    return RecipesCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      title: Value(title),
+      inventorySnapshot: Value(inventorySnapshot),
+      response: Value(response),
+      inputTokens: inputTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(inputTokens),
+      outputTokens: outputTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(outputTokens),
+      cacheReadTokens: cacheReadTokens == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cacheReadTokens),
+    );
+  }
+
+  factory Recipe.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Recipe(
+      id: serializer.fromJson<int>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      title: serializer.fromJson<String>(json['title']),
+      inventorySnapshot: serializer.fromJson<String>(json['inventorySnapshot']),
+      response: serializer.fromJson<String>(json['response']),
+      inputTokens: serializer.fromJson<int?>(json['inputTokens']),
+      outputTokens: serializer.fromJson<int?>(json['outputTokens']),
+      cacheReadTokens: serializer.fromJson<int?>(json['cacheReadTokens']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'title': serializer.toJson<String>(title),
+      'inventorySnapshot': serializer.toJson<String>(inventorySnapshot),
+      'response': serializer.toJson<String>(response),
+      'inputTokens': serializer.toJson<int?>(inputTokens),
+      'outputTokens': serializer.toJson<int?>(outputTokens),
+      'cacheReadTokens': serializer.toJson<int?>(cacheReadTokens),
+    };
+  }
+
+  Recipe copyWith({
+    int? id,
+    DateTime? createdAt,
+    String? title,
+    String? inventorySnapshot,
+    String? response,
+    Value<int?> inputTokens = const Value.absent(),
+    Value<int?> outputTokens = const Value.absent(),
+    Value<int?> cacheReadTokens = const Value.absent(),
+  }) => Recipe(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    title: title ?? this.title,
+    inventorySnapshot: inventorySnapshot ?? this.inventorySnapshot,
+    response: response ?? this.response,
+    inputTokens: inputTokens.present ? inputTokens.value : this.inputTokens,
+    outputTokens: outputTokens.present ? outputTokens.value : this.outputTokens,
+    cacheReadTokens: cacheReadTokens.present
+        ? cacheReadTokens.value
+        : this.cacheReadTokens,
+  );
+  Recipe copyWithCompanion(RecipesCompanion data) {
+    return Recipe(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      title: data.title.present ? data.title.value : this.title,
+      inventorySnapshot: data.inventorySnapshot.present
+          ? data.inventorySnapshot.value
+          : this.inventorySnapshot,
+      response: data.response.present ? data.response.value : this.response,
+      inputTokens: data.inputTokens.present
+          ? data.inputTokens.value
+          : this.inputTokens,
+      outputTokens: data.outputTokens.present
+          ? data.outputTokens.value
+          : this.outputTokens,
+      cacheReadTokens: data.cacheReadTokens.present
+          ? data.cacheReadTokens.value
+          : this.cacheReadTokens,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Recipe(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('title: $title, ')
+          ..write('inventorySnapshot: $inventorySnapshot, ')
+          ..write('response: $response, ')
+          ..write('inputTokens: $inputTokens, ')
+          ..write('outputTokens: $outputTokens, ')
+          ..write('cacheReadTokens: $cacheReadTokens')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    title,
+    inventorySnapshot,
+    response,
+    inputTokens,
+    outputTokens,
+    cacheReadTokens,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Recipe &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.title == this.title &&
+          other.inventorySnapshot == this.inventorySnapshot &&
+          other.response == this.response &&
+          other.inputTokens == this.inputTokens &&
+          other.outputTokens == this.outputTokens &&
+          other.cacheReadTokens == this.cacheReadTokens);
+}
+
+class RecipesCompanion extends UpdateCompanion<Recipe> {
+  final Value<int> id;
+  final Value<DateTime> createdAt;
+  final Value<String> title;
+  final Value<String> inventorySnapshot;
+  final Value<String> response;
+  final Value<int?> inputTokens;
+  final Value<int?> outputTokens;
+  final Value<int?> cacheReadTokens;
+  const RecipesCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.title = const Value.absent(),
+    this.inventorySnapshot = const Value.absent(),
+    this.response = const Value.absent(),
+    this.inputTokens = const Value.absent(),
+    this.outputTokens = const Value.absent(),
+    this.cacheReadTokens = const Value.absent(),
+  });
+  RecipesCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime createdAt,
+    required String title,
+    required String inventorySnapshot,
+    required String response,
+    this.inputTokens = const Value.absent(),
+    this.outputTokens = const Value.absent(),
+    this.cacheReadTokens = const Value.absent(),
+  }) : createdAt = Value(createdAt),
+       title = Value(title),
+       inventorySnapshot = Value(inventorySnapshot),
+       response = Value(response);
+  static Insertable<Recipe> custom({
+    Expression<int>? id,
+    Expression<DateTime>? createdAt,
+    Expression<String>? title,
+    Expression<String>? inventorySnapshot,
+    Expression<String>? response,
+    Expression<int>? inputTokens,
+    Expression<int>? outputTokens,
+    Expression<int>? cacheReadTokens,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (title != null) 'title': title,
+      if (inventorySnapshot != null) 'inventory_snapshot': inventorySnapshot,
+      if (response != null) 'response': response,
+      if (inputTokens != null) 'input_tokens': inputTokens,
+      if (outputTokens != null) 'output_tokens': outputTokens,
+      if (cacheReadTokens != null) 'cache_read_tokens': cacheReadTokens,
+    });
+  }
+
+  RecipesCompanion copyWith({
+    Value<int>? id,
+    Value<DateTime>? createdAt,
+    Value<String>? title,
+    Value<String>? inventorySnapshot,
+    Value<String>? response,
+    Value<int?>? inputTokens,
+    Value<int?>? outputTokens,
+    Value<int?>? cacheReadTokens,
+  }) {
+    return RecipesCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      title: title ?? this.title,
+      inventorySnapshot: inventorySnapshot ?? this.inventorySnapshot,
+      response: response ?? this.response,
+      inputTokens: inputTokens ?? this.inputTokens,
+      outputTokens: outputTokens ?? this.outputTokens,
+      cacheReadTokens: cacheReadTokens ?? this.cacheReadTokens,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (inventorySnapshot.present) {
+      map['inventory_snapshot'] = Variable<String>(inventorySnapshot.value);
+    }
+    if (response.present) {
+      map['response'] = Variable<String>(response.value);
+    }
+    if (inputTokens.present) {
+      map['input_tokens'] = Variable<int>(inputTokens.value);
+    }
+    if (outputTokens.present) {
+      map['output_tokens'] = Variable<int>(outputTokens.value);
+    }
+    if (cacheReadTokens.present) {
+      map['cache_read_tokens'] = Variable<int>(cacheReadTokens.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RecipesCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('title: $title, ')
+          ..write('inventorySnapshot: $inventorySnapshot, ')
+          ..write('response: $response, ')
+          ..write('inputTokens: $inputTokens, ')
+          ..write('outputTokens: $outputTokens, ')
+          ..write('cacheReadTokens: $cacheReadTokens')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1400,6 +1925,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $ShoppingItemsTable shoppingItems = $ShoppingItemsTable(this);
+  late final $RecipesTable recipes = $RecipesTable(this);
   late final IngredientDao ingredientDao = IngredientDao(this as AppDatabase);
   late final ShoppingRecordDao shoppingRecordDao = ShoppingRecordDao(
     this as AppDatabase,
@@ -1407,6 +1933,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final ShoppingItemDao shoppingItemDao = ShoppingItemDao(
     this as AppDatabase,
   );
+  late final RecipeDao recipeDao = RecipeDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1415,6 +1942,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     ingredients,
     shoppingRecords,
     shoppingItems,
+    recipes,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -2569,6 +3097,259 @@ typedef $$ShoppingItemsTableProcessedTableManager =
       ShoppingItem,
       PrefetchHooks Function({bool recordId, bool ingredientId})
     >;
+typedef $$RecipesTableCreateCompanionBuilder =
+    RecipesCompanion Function({
+      Value<int> id,
+      required DateTime createdAt,
+      required String title,
+      required String inventorySnapshot,
+      required String response,
+      Value<int?> inputTokens,
+      Value<int?> outputTokens,
+      Value<int?> cacheReadTokens,
+    });
+typedef $$RecipesTableUpdateCompanionBuilder =
+    RecipesCompanion Function({
+      Value<int> id,
+      Value<DateTime> createdAt,
+      Value<String> title,
+      Value<String> inventorySnapshot,
+      Value<String> response,
+      Value<int?> inputTokens,
+      Value<int?> outputTokens,
+      Value<int?> cacheReadTokens,
+    });
+
+class $$RecipesTableFilterComposer
+    extends Composer<_$AppDatabase, $RecipesTable> {
+  $$RecipesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get inventorySnapshot => $composableBuilder(
+    column: $table.inventorySnapshot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get response => $composableBuilder(
+    column: $table.response,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get inputTokens => $composableBuilder(
+    column: $table.inputTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get outputTokens => $composableBuilder(
+    column: $table.outputTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get cacheReadTokens => $composableBuilder(
+    column: $table.cacheReadTokens,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RecipesTableOrderingComposer
+    extends Composer<_$AppDatabase, $RecipesTable> {
+  $$RecipesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get inventorySnapshot => $composableBuilder(
+    column: $table.inventorySnapshot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get response => $composableBuilder(
+    column: $table.response,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get inputTokens => $composableBuilder(
+    column: $table.inputTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get outputTokens => $composableBuilder(
+    column: $table.outputTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get cacheReadTokens => $composableBuilder(
+    column: $table.cacheReadTokens,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RecipesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RecipesTable> {
+  $$RecipesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get inventorySnapshot => $composableBuilder(
+    column: $table.inventorySnapshot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get response =>
+      $composableBuilder(column: $table.response, builder: (column) => column);
+
+  GeneratedColumn<int> get inputTokens => $composableBuilder(
+    column: $table.inputTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get outputTokens => $composableBuilder(
+    column: $table.outputTokens,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get cacheReadTokens => $composableBuilder(
+    column: $table.cacheReadTokens,
+    builder: (column) => column,
+  );
+}
+
+class $$RecipesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RecipesTable,
+          Recipe,
+          $$RecipesTableFilterComposer,
+          $$RecipesTableOrderingComposer,
+          $$RecipesTableAnnotationComposer,
+          $$RecipesTableCreateCompanionBuilder,
+          $$RecipesTableUpdateCompanionBuilder,
+          (Recipe, BaseReferences<_$AppDatabase, $RecipesTable, Recipe>),
+          Recipe,
+          PrefetchHooks Function()
+        > {
+  $$RecipesTableTableManager(_$AppDatabase db, $RecipesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RecipesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RecipesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RecipesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> inventorySnapshot = const Value.absent(),
+                Value<String> response = const Value.absent(),
+                Value<int?> inputTokens = const Value.absent(),
+                Value<int?> outputTokens = const Value.absent(),
+                Value<int?> cacheReadTokens = const Value.absent(),
+              }) => RecipesCompanion(
+                id: id,
+                createdAt: createdAt,
+                title: title,
+                inventorySnapshot: inventorySnapshot,
+                response: response,
+                inputTokens: inputTokens,
+                outputTokens: outputTokens,
+                cacheReadTokens: cacheReadTokens,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required DateTime createdAt,
+                required String title,
+                required String inventorySnapshot,
+                required String response,
+                Value<int?> inputTokens = const Value.absent(),
+                Value<int?> outputTokens = const Value.absent(),
+                Value<int?> cacheReadTokens = const Value.absent(),
+              }) => RecipesCompanion.insert(
+                id: id,
+                createdAt: createdAt,
+                title: title,
+                inventorySnapshot: inventorySnapshot,
+                response: response,
+                inputTokens: inputTokens,
+                outputTokens: outputTokens,
+                cacheReadTokens: cacheReadTokens,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RecipesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RecipesTable,
+      Recipe,
+      $$RecipesTableFilterComposer,
+      $$RecipesTableOrderingComposer,
+      $$RecipesTableAnnotationComposer,
+      $$RecipesTableCreateCompanionBuilder,
+      $$RecipesTableUpdateCompanionBuilder,
+      (Recipe, BaseReferences<_$AppDatabase, $RecipesTable, Recipe>),
+      Recipe,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2579,6 +3360,8 @@ class $AppDatabaseManager {
       $$ShoppingRecordsTableTableManager(_db, _db.shoppingRecords);
   $$ShoppingItemsTableTableManager get shoppingItems =>
       $$ShoppingItemsTableTableManager(_db, _db.shoppingItems);
+  $$RecipesTableTableManager get recipes =>
+      $$RecipesTableTableManager(_db, _db.recipes);
 }
 
 mixin _$IngredientDaoMixin on DatabaseAccessor<AppDatabase> {
@@ -2633,4 +3416,16 @@ class ShoppingItemDaoManager {
       $$IngredientsTableTableManager(_db.attachedDatabase, _db.ingredients);
   $$ShoppingItemsTableTableManager get shoppingItems =>
       $$ShoppingItemsTableTableManager(_db.attachedDatabase, _db.shoppingItems);
+}
+
+mixin _$RecipeDaoMixin on DatabaseAccessor<AppDatabase> {
+  $RecipesTable get recipes => attachedDatabase.recipes;
+  RecipeDaoManager get managers => RecipeDaoManager(this);
+}
+
+class RecipeDaoManager {
+  final _$RecipeDaoMixin _db;
+  RecipeDaoManager(this._db);
+  $$RecipesTableTableManager get recipes =>
+      $$RecipesTableTableManager(_db.attachedDatabase, _db.recipes);
 }
