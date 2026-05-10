@@ -105,7 +105,6 @@ Future<List<Photo>> fetchPhotos() async {
     return compute(parsePhotos, response.body);
   } else {
     throw Exception('Failed to load photos. Status: ${response.statusCode}');
-  }
 }
 }
 
