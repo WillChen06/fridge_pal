@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/db/database.dart';
 import '../../core/db/database_provider.dart';
+import '../../core/notifications/inventory_notification_actions.dart';
 
 class ShoppingItemInput {
   const ShoppingItemInput({
@@ -31,9 +32,10 @@ class ShoppingRecordInput {
 }
 
 class ShoppingRepository {
-  const ShoppingRepository(this._database);
+  const ShoppingRepository(this._database, {this.notifications});
 
   final AppDatabase _database;
+  final InventoryNotificationActions? notifications;
 
   Stream<List<ShoppingRecordWithItems>> watchAll() {
     return _database.shoppingRecordDao.watchAllWithItems();
@@ -79,6 +81,7 @@ class ShoppingRepository {
             ? await _createIngredientFor(item)
             : await _incrementIngredient(existingIngredient, item.quantity);
         ingredientsByName[normalizedName] = syncedIngredient;
+        await notifications?.notifyLowStockIfNeeded(syncedIngredient);
 
         companions.add(
           ShoppingItemsCompanion.insert(
@@ -198,7 +201,10 @@ class _CleanShoppingItemInput {
 }
 
 final shoppingRepositoryProvider = Provider<ShoppingRepository>((ref) {
-  return ShoppingRepository(ref.watch(appDatabaseProvider));
+  return ShoppingRepository(
+    ref.watch(appDatabaseProvider),
+    notifications: ref.watch(inventoryNotificationActionsProvider),
+  );
 });
 
 final shoppingRecordListProvider =
