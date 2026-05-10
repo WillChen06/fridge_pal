@@ -7,6 +7,7 @@ import '../../features/inventory/ingredient_detail_screen.dart';
 import '../../features/inventory/ingredient_form_screen.dart';
 import '../../features/recipes/recipes_screen.dart';
 import '../../features/scan/scan_screen.dart';
+import '../../features/settings/settings_screen.dart';
 import '../../features/shopping/shopping_record_detail_screen.dart';
 import '../../features/shopping/shopping_record_form_screen.dart';
 import '../../features/shopping/shopping_screen.dart';
@@ -91,6 +92,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
     ],
   );
