@@ -22,6 +22,27 @@ void main() {
       expect(label.expiryDate, DateTime(2026, 7, 2));
     });
 
+    test('prefers product name label over first OCR line fallback', () {
+      final label = parseLabel(
+        '營養標示\n'
+        '品 名：統一陽光 陽光黃金豆無加糖豆漿\n'
+        '原 料：水、非基因改造黃豆、食鹽\n'
+        '內容量：1858毫升',
+      );
+
+      expect(label.productName, '統一陽光 陽光黃金豆無加糖豆漿');
+    });
+
+    test('parses product name when OCR splits name onto next line', () {
+      final label = parseLabel(
+        '品 名：\n'
+        '統一陽光 陽光黃金豆無加糖豆漿\n'
+        '保存期間：13天',
+      );
+
+      expect(label.productName, '統一陽光 陽光黃金豆無加糖豆漿');
+    });
+
     test('parses weight quantity', () {
       final label = parseLabel('冷凍水餃\n900 g');
 

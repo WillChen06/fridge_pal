@@ -65,13 +65,54 @@ DateTime? _parseExpiryDate(String rawText) {
 }
 
 String? _parseProductName(String rawText) {
-  for (final line in rawText.split(RegExp(r'\r?\n'))) {
-    final trimmed = line.trim();
+  final lines = rawText
+      .split(RegExp(r'\r?\n'))
+      .map((line) => line.trim())
+      .toList();
+
+  for (var i = 0; i < lines.length; i += 1) {
+    final trimmed = lines[i];
+    final match = _productNamePattern.firstMatch(trimmed);
+    if (match == null) {
+      continue;
+    }
+
+    final sameLineName = _cleanProductName(match.group(1) ?? '');
+    if (sameLineName != null) {
+      return sameLineName;
+    }
+
+    if (i + 1 < lines.length) {
+      final nextLineName = _cleanProductName(lines[i + 1]);
+      if (nextLineName != null) {
+        return nextLineName;
+      }
+    }
+  }
+
+  for (final trimmed in lines) {
     if (trimmed.isNotEmpty && trimmed.length < 30) {
       return trimmed;
     }
   }
   return null;
+}
+
+final RegExp _productNamePattern = RegExp(r'^品\s*名\s*[:：]?\s*(.*)$');
+
+final RegExp _nextFieldPattern = RegExp(
+  r'\s+(?:原\s*料|內\s*容\s*量|有效日期|保存期限|保存期間|保存條件)\s*[:：]',
+);
+
+String? _cleanProductName(String value) {
+  final fieldStart = _nextFieldPattern.firstMatch(value);
+  final name =
+      (fieldStart == null ? value : value.substring(0, fieldStart.start))
+          .trim();
+  if (name.isEmpty) {
+    return null;
+  }
+  return name;
 }
 
 String _normalizeUnit(String unit) {
