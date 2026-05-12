@@ -71,7 +71,7 @@ class RecipeDone extends RecipeStreamEvent {
 class ClaudeClient {
   ClaudeClient({required String apiKey, required String model, Dio? dio})
     : _apiKey = apiKey,
-      _model = model,
+      _model = _normalizeModel(model),
       _dio =
           dio ??
           Dio(
@@ -122,44 +122,41 @@ class ClaudeClient {
     List<IngredientInput> ingredients,
   ) async {
     try {
-      return await _dio
-          .post<ResponseBody>(
-            '/v1/messages',
-            data: <String, Object?>{
-              'model': _model,
-              'max_tokens': 2048,
-              'system': <Map<String, Object?>>[
-                <String, Object?>{
-                  'type': 'text',
-                  'text': kRecipeSystemPrompt,
-                  'cache_control': <String, Object?>{'type': 'ephemeral'},
-                },
-              ],
-              'messages': <Map<String, Object?>>[
-                <String, Object?>{
-                  'role': 'user',
-                  'content': RecipePromptBuilder.buildUserMessage(ingredients),
-                },
-              ],
-              'stream': true,
+      final response = await _dio.post<ResponseBody>(
+        '/v1/messages',
+        data: <String, Object?>{
+          'model': _model,
+          'max_tokens': 2048,
+          'system': <Map<String, Object?>>[
+            <String, Object?>{
+              'type': 'text',
+              'text': kRecipeSystemPrompt,
+              'cache_control': <String, Object?>{'type': 'ephemeral'},
             },
-            options: Options(
-              responseType: ResponseType.stream,
-              headers: <String, Object?>{
-                'x-api-key': _apiKey,
-                'anthropic-version': '2023-06-01',
-                'content-type': 'application/json',
-              },
-              validateStatus: (_) => true,
-            ),
-          )
-          .then((response) {
-            final statusCode = response.statusCode ?? 0;
-            if (statusCode < 200 || statusCode >= 300) {
-              throw _exceptionFromStatus(statusCode);
-            }
-            return response;
-          });
+          ],
+          'messages': <Map<String, Object?>>[
+            <String, Object?>{
+              'role': 'user',
+              'content': RecipePromptBuilder.buildUserMessage(ingredients),
+            },
+          ],
+          'stream': true,
+        },
+        options: Options(
+          responseType: ResponseType.stream,
+          headers: <String, Object?>{
+            'x-api-key': _apiKey,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json',
+          },
+          validateStatus: (_) => true,
+        ),
+      );
+      final statusCode = response.statusCode ?? 0;
+      if (statusCode < 200 || statusCode >= 300) {
+        throw await _exceptionFromErrorResponse(statusCode, response.data);
+      }
+      return response;
     } on DioException catch (error) {
       throw _exceptionFromDio(error);
     } on SocketException {
@@ -274,6 +271,52 @@ class ClaudeClient {
     };
   }
 
+  Future<ClaudeApiException> _exceptionFromErrorResponse(
+    int statusCode,
+    ResponseBody? body,
+  ) async {
+    final message = await _readAnthropicErrorMessage(body);
+    final fallback = _exceptionFromStatus(statusCode);
+    if (message == null || message.isEmpty) {
+      return fallback;
+    }
+    return ClaudeApiException(
+      fallback.type,
+      '${fallback.message}：$message',
+      statusCode: statusCode,
+    );
+  }
+
+  Future<String?> _readAnthropicErrorMessage(ResponseBody? body) async {
+    if (body == null) {
+      return null;
+    }
+    final text = await body.stream
+        .map<List<int>>((bytes) => bytes)
+        .transform(utf8.decoder)
+        .join();
+    if (text.isEmpty) {
+      return null;
+    }
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(text);
+    } on FormatException {
+      return text;
+    }
+    if (decoded is! Map<String, Object?>) {
+      return text;
+    }
+    final error = decoded['error'];
+    if (error is Map<String, Object?>) {
+      final message = error['message'];
+      if (message is String) {
+        return message;
+      }
+    }
+    return text;
+  }
+
   ClaudeApiException _exceptionFromDio(DioException error) {
     final statusCode = error.response?.statusCode;
     if (statusCode != null) {
@@ -311,6 +354,14 @@ final claudeClientProvider = Provider<ClaudeClient?>((ref) {
   }
   return ClaudeClient(apiKey: Env.anthropicApiKey, model: Env.anthropicModel);
 });
+
+String _normalizeModel(String model) {
+  return switch (model.trim()) {
+    'claude-sonnet-4-6' => 'claude-sonnet-4-20250514',
+    '' => 'claude-sonnet-4-20250514',
+    final value => value,
+  };
+}
 
 class _SseEvent {
   const _SseEvent(this.name, this.data);

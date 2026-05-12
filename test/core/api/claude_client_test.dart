@@ -54,6 +54,7 @@ void main() {
     expect(done.usage.cacheReadTokens, 80);
     expect(adapter.requestBody, contains('"stream":true'));
     expect(adapter.requestBody, contains('"cache_control"'));
+    expect(adapter.requestBody, contains('"model":"claude-sonnet-4-20250514"'));
   });
 
   test('401 maps to unauthorized exception', () async {
@@ -86,6 +87,32 @@ void main() {
     );
   });
 
+  test('400 includes Anthropic error message when present', () async {
+    final client = _clientForStatus(
+      400,
+      body: jsonEncode(<String, Object?>{
+        'type': 'error',
+        'error': <String, Object?>{
+          'type': 'invalid_request_error',
+          'message': 'model: invalid model id',
+        },
+      }),
+    );
+
+    expect(
+      client.streamRecipes(ingredients: ingredients).toList(),
+      throwsA(
+        isA<ClaudeApiException>()
+            .having((error) => error.statusCode, 'statusCode', 400)
+            .having(
+              (error) => error.message,
+              'message',
+              contains('model: invalid model id'),
+            ),
+      ),
+    );
+  });
+
   test('stream cancellation completes after first delta', () async {
     final client = ClaudeClient(
       apiKey: 'test-key',
@@ -112,13 +139,13 @@ void main() {
   });
 }
 
-ClaudeClient _clientForStatus(int statusCode) {
+ClaudeClient _clientForStatus(int statusCode, {String body = ''}) {
   return ClaudeClient(
     apiKey: 'test-key',
-    model: 'claude-sonnet-4-6',
+    model: 'claude-sonnet-4-20250514',
     dio: Dio()
       ..httpClientAdapter = _FakeAdapter(
-        response: ResponseBody.fromString('', statusCode),
+        response: ResponseBody.fromString(body, statusCode),
       ),
   );
 }
