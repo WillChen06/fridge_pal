@@ -3,6 +3,7 @@ import 'package:drift_flutter/drift_flutter.dart';
 
 part 'database.g.dart';
 part 'ingredient_dao.dart';
+part 'recipe_dao.dart';
 part 'shopping_item_dao.dart';
 part 'shopping_record_dao.dart';
 
@@ -42,16 +43,27 @@ class ShoppingItems extends Table {
   RealColumn get cost => real().nullable()();
 }
 
+class Recipes extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  DateTimeColumn get createdAt => dateTime()();
+  TextColumn get title => text()();
+  TextColumn get inventorySnapshot => text()();
+  TextColumn get response => text()();
+  IntColumn get inputTokens => integer().nullable()();
+  IntColumn get outputTokens => integer().nullable()();
+  IntColumn get cacheReadTokens => integer().nullable()();
+}
+
 @DriftDatabase(
-  tables: [Ingredients, ShoppingRecords, ShoppingItems],
-  daos: [IngredientDao, ShoppingRecordDao, ShoppingItemDao],
+  tables: [Ingredients, ShoppingRecords, ShoppingItems, Recipes],
+  daos: [IngredientDao, ShoppingRecordDao, ShoppingItemDao, RecipeDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
     : super(executor ?? driftDatabase(name: 'fridge_pal'));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -60,6 +72,9 @@ class AppDatabase extends _$AppDatabase {
       if (from < 2) {
         await migrator.createTable(shoppingRecords);
         await migrator.createTable(shoppingItems);
+      }
+      if (from < 3) {
+        await migrator.createTable(recipes);
       }
     },
     beforeOpen: (details) async {

@@ -29,6 +29,7 @@ dependencies:
 
   # HTTP / Claude API
   dio: ^5.7.0
+  flutter_markdown: ^0.7.4
 
   # OCR
   google_mlkit_text_recognition: ^0.14.0

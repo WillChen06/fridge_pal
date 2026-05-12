@@ -41,7 +41,7 @@
 | OCR | `google_mlkit_text_recognition`（裝置端） |
 | 拍照 | `image_picker`（相簿 + 相機） |
 | 本地通知 | `flutter_local_notifications` + `workmanager` |
-| AI Provider | Claude（Anthropic Messages API，模型 `claude-sonnet-4-6`，啟用 prompt caching） |
+| AI Provider | Claude（Anthropic Messages API，模型 `claude-sonnet-4-20250514`，啟用 prompt caching） |
 | API Key 管理 | `.env` + `--dart-define-from-file`，`.env` 加入 `.gitignore`；CI 用 GitHub Secrets |
 | HTTP | `dio`（攔截器友善、log 方便） |
 | 路由 | `go_router` |

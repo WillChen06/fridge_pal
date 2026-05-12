@@ -1,10 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../api/recipe_prompts.dart';
 import '../ocr/label_parser.dart';
 import '../../features/inventory/inventory_screen.dart';
 import '../../features/inventory/ingredient_detail_screen.dart';
 import '../../features/inventory/ingredient_form_screen.dart';
+import '../../features/recipes/recipe_detail_screen.dart';
+import '../../features/recipes/recipe_generation_screen.dart';
 import '../../features/recipes/recipes_screen.dart';
 import '../../features/scan/scan_screen.dart';
 import '../../features/settings/settings_screen.dart';
@@ -88,6 +91,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/recipes',
                 builder: (context, state) => const RecipesScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'new',
+                    builder: (context, state) {
+                      final extra = state.extra;
+                      return RecipeGenerationScreen(
+                        ingredients: extra is List<IngredientInput>
+                            ? extra
+                            : const <IngredientInput>[],
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: ':id',
+                    builder: (context, state) => RecipeDetailScreen(
+                      recipeId: int.parse(state.pathParameters['id']!),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

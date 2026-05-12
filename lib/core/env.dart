@@ -11,7 +11,7 @@ class Env {
 
   static const String anthropicModel = String.fromEnvironment(
     'ANTHROPIC_MODEL',
-    defaultValue: 'claude-sonnet-4-6',
+    defaultValue: 'claude-sonnet-4-20250514',
   );
 
   static bool get hasAnthropicKey => anthropicApiKey.isNotEmpty;
